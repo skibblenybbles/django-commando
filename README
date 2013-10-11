@@ -1,0 +1,3 @@
+A declarative API for writing, overriding and sequencing Django management commands.
+
+See https://github.com/skibblenybbles/django-commando for details.
