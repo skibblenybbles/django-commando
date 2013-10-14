@@ -339,17 +339,28 @@ class BaseCommandOptions(CommandOptions):
         this command from the search.
         
         """
-        return check_command(
+        if not check_command(
             name, 
             exclude_packages=self.get_exclude_packages(),
-            exclude_command_class=self.__class__)
+            exclude_command_class=self.__class__):
+            raise management.CommandError(
+                "The management command \"{name:s}\" is not available. "
+                "Please ensure that you've added the application with "
+                "the \"{name:s}\" command to your INSTALLED_APPS "
+                "setting".format(
+                    name=name))
     
     def check_program(self, name):
         """
         Checks whether a program is available on the shell PATH.
         
         """
-        return check_program(name)
+        if not check_program(name):
+            raise management.CommandError(
+                "The program \"{name:s}\" is not available in the shell. "
+                "Please ensure that \"{name:s}\" is installed and reachable "
+                "through your PATH environment variable.".format(
+                    name=name))
     
     def call_command(self, name, *arguments, **options):
         """
@@ -369,7 +380,7 @@ class BaseCommandOptions(CommandOptions):
         defaults.update(options)
         return command.execute(*arguments, **defaults)
     
-    def call_program(name, *arguments):
+    def call_program(self, name, *arguments):
         """
         Calls the shell program on the PATH with the given arguments.
         
