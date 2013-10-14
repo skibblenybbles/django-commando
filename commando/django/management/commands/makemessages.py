@@ -1,0 +1,1 @@
+from ..makemessages import MakeMessagesCommand as Command

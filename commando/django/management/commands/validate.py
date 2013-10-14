@@ -1,0 +1,1 @@
+from ..validate import ValidateCommand as Command

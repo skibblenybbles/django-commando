@@ -11,7 +11,7 @@ def read(filename):
 
 
 setup(
-    name="django-grunt",
+    name="django-commando",
     version=commando.__version__,
     description="A declarative API for writing, overriding and sequencing Django management commands",
     long_description=read("README"),
