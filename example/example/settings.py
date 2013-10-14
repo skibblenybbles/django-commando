@@ -125,10 +125,10 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'commando',
-    'commando.django',
-    'commando.django.auth',
-    'commando.django.sessions',
-    'commando.django.staticfiles',
+    'commando.django.core',
+    'commando.django.contrib.auth',
+    'commando.django.contrib.sessions',
+    'commando.django.contrib.staticfiles',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
