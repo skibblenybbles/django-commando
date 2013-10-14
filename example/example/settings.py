@@ -116,7 +116,9 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.gis',
     'django.contrib.sessions',
+    'django.contrib.sitemaps',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -127,7 +129,9 @@ INSTALLED_APPS = (
     'commando',
     'commando.django.core',
     'commando.django.contrib.auth',
+    'commando.django.contrib.gis',
     'commando.django.contrib.sessions',
+    'commando.django.contrib.sitemaps',
     'commando.django.contrib.staticfiles',
 )
 
