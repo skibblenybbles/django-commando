@@ -320,7 +320,7 @@ class BaseCommandOptions(CommandOptions):
     
     def get_exclude_packages(self):
         """
-        A hook to override exluded packages when checking or running other
+        A hook to override excluded packages when checking or running other
         management commands with check_command() or call_command.
         
         """
