@@ -6,14 +6,16 @@ BaseSQLInitialDataCommand = management.get_command_class(
 
 if BaseSQLInitialDataCommand is not None:
     
+    base = BaseSQLInitialDataCommand()
+    
     class SQLInitialDataCommandOptions(management.CommandOptions):
         """
         SQLInitialData command options.
         
         """
-        args = BaseSQLInitialDataCommand.args
-        help = BaseSQLInitialDataCommand.help
-        option_list = BaseSQLInitialDataCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[sqlinitialdata options]",

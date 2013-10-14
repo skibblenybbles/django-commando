@@ -6,14 +6,16 @@ BaseSQLSequenceResetCommand = management.get_command_class(
 
 if BaseSQLSequenceResetCommand is not None:
     
+    base = BaseSQLSequenceResetCommand()
+    
     class SQLSequenceResetCommandOptions(management.CommandOptions):
         """
         SQLSequenceReset command options.
         
         """
-        args = BaseSQLSequenceResetCommand.args
-        help = BaseSQLSequenceResetCommand.help
-        option_list = BaseSQLSequenceResetCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[sqlsequencereset options]",

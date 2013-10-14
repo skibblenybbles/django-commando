@@ -6,14 +6,16 @@ BaseCollectStaticCommand = management.get_command_class(
 
 if BaseCollectStaticCommand is not None:
     
+    base = BaseCollectStaticCommand()
+    
     class CollectStaticCommandOptions(management.CommandOptions):
         """
         CollectStatic command options.
         
         """
-        args = BaseCollectStaticCommand.args
-        help = BaseCollectStaticCommand.help
-        option_list = BaseCollectStaticCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[collectstatic options]",

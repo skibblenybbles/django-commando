@@ -6,14 +6,16 @@ BaseHaystackInfoCommand = management.get_command_class(
 
 if BaseHaystackInfoCommand is not None:
     
+    base = BaseHaystackInfoCommand()
+    
     class HaystackInfoCommandOptions(management.CommandOptions):
         """
         HaystackInfo command options.
         
         """
-        args = BaseHaystackInfoCommand.args
-        help = BaseHaystackInfoCommand.help
-        option_list = BaseHaystackInfoCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[haystack_info options]",

@@ -6,14 +6,16 @@ BaseDataMigrationCommand = management.get_command_class(
 
 if BaseDataMigrationCommand is not None:
     
+    base = BaseDataMigrationCommand()
+    
     class DataMigrationCommandOptions(management.CommandOptions):
         """
         DataMigration command options.
         
         """
-        args = BaseDataMigrationCommand.args
-        help = BaseDataMigrationCommand.help
-        option_list = BaseDataMigrationCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[datamigration options]",

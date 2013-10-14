@@ -6,14 +6,16 @@ BaseSQLClearCommand = management.get_command_class(
 
 if BaseSQLClearCommand is not None:
     
+    base = BaseSQLClearCommand()
+    
     class SQLClearCommandOptions(management.CommandOptions):
         """
         SQLClear command options.
         
         """
-        args = BaseSQLClearCommand.args
-        help = BaseSQLClearCommand.help
-        option_list = BaseSQLClearCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[sqlclear options]",

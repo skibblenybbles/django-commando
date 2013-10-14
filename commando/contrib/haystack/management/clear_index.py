@@ -6,14 +6,16 @@ BaseClearIndexCommand = management.get_command_class(
 
 if BaseClearIndexCommand is not None:
     
+    base = BaseClearIndexCommand()
+    
     class ClearIndexCommandOptions(management.CommandOptions):
         """
         ClearIndex command options.
         
         """
-        args = BaseClearIndexCommand.args
-        help = BaseClearIndexCommand.help
-        option_list = BaseClearIndexCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[clear_index options]",

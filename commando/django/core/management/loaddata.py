@@ -6,14 +6,16 @@ BaseLoadDataCommand = management.get_command_class(
 
 if BaseLoadDataCommand is not None:
     
+    base = BaseLoadDataCommand()
+    
     class LoadDataCommandOptions(management.CommandOptions):
         """
         LoadData command options.
         
         """
-        args = BaseLoadDataCommand.args
-        help = BaseLoadDataCommand.help
-        option_list = BaseLoadDataCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[loaddata options]",

@@ -6,14 +6,16 @@ BaseUpdateIndexCommand = management.get_command_class(
 
 if BaseUpdateIndexCommand is not None:
     
+    base = BaseUpdateIndexCommand()
+    
     class UpdateIndexCommandOptions(management.CommandOptions):
         """
         UpdateIndex command options.
         
         """
-        args = BaseUpdateIndexCommand.args
-        help = BaseUpdateIndexCommand.help
-        option_list = BaseUpdateIndexCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[update_index options]",

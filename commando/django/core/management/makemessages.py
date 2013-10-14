@@ -6,14 +6,16 @@ BaseMakeMessagesCommand = management.get_command_class(
 
 if BaseMakeMessagesCommand is not None:
     
+    base = BaseMakeMessagesCommand()
+    
     class MakeMessagesCommandOptions(management.CommandOptions):
         """
         MakeMessages command options.
         
         """
-        args = BaseMakeMessagesCommand.args
-        help = BaseMakeMessagesCommand.help
-        option_list = BaseMakeMessagesCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[makemessages options]",

@@ -6,14 +6,16 @@ BaseSQLAllCommand = management.get_command_class(
 
 if BaseSQLAllCommand is not None:
     
+    base = BaseSQLAllCommand()
+    
     class SQLAllCommandOptions(management.CommandOptions):
         """
         SQLAll command options.
         
         """
-        args = BaseSQLAllCommand.args
-        help = BaseSQLAllCommand.help
-        option_list = BaseSQLAllCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[sqlall options]",

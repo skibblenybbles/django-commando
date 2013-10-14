@@ -6,14 +6,16 @@ BaseCreateSuperuserCommand = management.get_command_class(
 
 if BaseCreateSuperuserCommand is not None:
     
+    base = BaseCreateSuperuserCommand()
+    
     class CreateSuperuserCommandOptions(management.CommandOptions):
         """
         CreateSuperuser command options.
         
         """
-        args = BaseCreateSuperuserCommand.args
-        help = BaseCreateSuperuserCommand.help
-        option_list = BaseCreateSuperuserCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[createsuperuser options]",

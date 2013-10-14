@@ -6,14 +6,16 @@ BaseRunFCGICommand = management.get_command_class(
 
 if BaseRunFCGICommand is not None:
     
+    base = BaseRunFCGICommand()
+    
     class RunFCGICommandOptions(management.CommandOptions):
         """
         RunFCGI command options.
         
         """
-        args = BaseRunFCGICommand.args
-        help = BaseRunFCGICommand.help
-        option_list = BaseRunFCGICommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[runfcgi options]",

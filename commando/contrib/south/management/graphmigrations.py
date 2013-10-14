@@ -6,14 +6,16 @@ BaseGraphMigrationsCommand = management.get_command_class(
 
 if BaseGraphMigrationsCommand is not None:
     
+    base = BaseGraphMigrationsCommand()
+    
     class GraphMigrationsCommandOptions(management.CommandOptions):
         """
         GraphMigrations command options.
         
         """
-        args = BaseGraphMigrationsCommand.args
-        help = BaseGraphMigrationsCommand.help
-        option_list = BaseGraphMigrationsCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[graphmigrations options]",

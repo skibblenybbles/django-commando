@@ -6,14 +6,16 @@ BaseMigrationCheckCommand = management.get_command_class(
 
 if BaseMigrationCheckCommand is not None:
     
+    base = BaseMigrationCheckCommand()
+    
     class MigrationCheckCommandOptions(management.CommandOptions):
         """
         MigrationCheck command options.
         
         """
-        args = BaseMigrationCheckCommand.args
-        help = BaseMigrationCheckCommand.help
-        option_list = BaseMigrationCheckCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[migrationcheck options]",

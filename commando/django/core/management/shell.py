@@ -6,14 +6,16 @@ BaseShellCommand = management.get_command_class(
 
 if BaseShellCommand is not None:
     
+    base = BaseShellCommand()
+    
     class ShellCommandOptions(management.CommandOptions):
         """
         Shell command options.
         
         """
-        args = BaseShellCommand.args
-        help = BaseShellCommand.help
-        option_list = BaseShellCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[shell options]",

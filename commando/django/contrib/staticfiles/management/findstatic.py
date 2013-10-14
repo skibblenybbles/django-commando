@@ -6,14 +6,16 @@ BaseFindStaticCommand = management.get_command_class(
 
 if BaseFindStaticCommand is not None:
     
+    base = BaseFindStaticCommand()
+    
     class FindStaticCommandOptions(management.CommandOptions):
         """
         FindStatic command options.
         
         """
-        args = BaseFindStaticCommand.args
-        help = BaseFindStaticCommand.help
-        option_list = BaseFindStaticCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[findstatic options]",

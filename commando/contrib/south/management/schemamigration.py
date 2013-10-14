@@ -6,14 +6,16 @@ BaseSchemaMigrationCommand = management.get_command_class(
 
 if BaseSchemaMigrationCommand is not None:
     
+    base = BaseSchemaMigrationCommand()
+    
     class SchemaMigrationCommandOptions(management.CommandOptions):
         """
         SchemaMigration command options.
         
         """
-        args = BaseSchemaMigrationCommand.args
-        help = BaseSchemaMigrationCommand.help
-        option_list = BaseSchemaMigrationCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[schemamigration options]",

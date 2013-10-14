@@ -6,14 +6,16 @@ BaseTestServerCommand = management.get_command_class(
 
 if BaseTestServerCommand is not None:
     
+    base = BaseTestServerCommand()
+    
     class TestServerCommandOptions(management.CommandOptions):
         """
         TestServer command options.
         
         """
-        args = BaseTestServerCommand.args
-        help = BaseTestServerCommand.help
-        option_list = BaseTestServerCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[testserver options]",

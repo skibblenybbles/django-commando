@@ -6,14 +6,16 @@ BaseFlushCommand = management.get_command_class(
 
 if BaseFlushCommand is not None:
     
+    base = BaseFlushCommand()
+    
     class FlushCommandOptions(management.CommandOptions):
         """
         Flush command options.
         
         """
-        args = BaseFlushCommand.args
-        help = BaseFlushCommand.help
-        option_list = BaseFlushCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[flush options]",

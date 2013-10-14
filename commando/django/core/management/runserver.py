@@ -6,14 +6,16 @@ BaseRunServerCommand = management.get_command_class(
 
 if BaseRunServerCommand is not None:
     
+    base = BaseRunServerCommand()
+    
     class RunServerCommandOptions(management.CommandOptions):
         """
         RunServer command options.
         
         """
-        args = BaseRunServerCommand.args
-        help = BaseRunServerCommand.help
-        option_list = BaseRunServerCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[runserver options]",

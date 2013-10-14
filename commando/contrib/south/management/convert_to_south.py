@@ -6,14 +6,16 @@ BaseConvertToSouthCommand = management.get_command_class(
 
 if BaseConvertToSouthCommand is not None:
     
+    base = BaseConvertToSouthCommand()
+    
     class ConvertToSouthCommandOptions(management.CommandOptions):
         """
         ConvertToSouth command options.
         
         """
-        args = BaseConvertToSouthCommand.args
-        help = BaseConvertToSouthCommand.help
-        option_list = BaseConvertToSouthCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[convert_to_south options]",

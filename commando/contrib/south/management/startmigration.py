@@ -6,14 +6,16 @@ BaseStartMigrationCommand = management.get_command_class(
 
 if BaseStartMigrationCommand is not None:
     
+    base = BaseStartMigrationCommand()
+    
     class StartMigrationCommandOptions(management.CommandOptions):
         """
         StartMigration command options.
         
         """
-        args = BaseStartMigrationCommand.args
-        help = BaseStartMigrationCommand.help
-        option_list = BaseStartMigrationCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[startmigration options]",

@@ -6,14 +6,16 @@ BaseCreateCacheTableCommand = management.get_command_class(
 
 if BaseCreateCacheTableCommand is not None:
     
+    base = BaseCreateCacheTableCommand()
+    
     class CreateCacheTableCommandOptions(management.CommandOptions):
         """
         Create cache table command options.
         
         """
-        args = BaseCreateCacheTableCommand.args
-        help = BaseCreateCacheTableCommand.help
-        option_list = BaseCreateCacheTableCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[createcachetable options]",

@@ -109,6 +109,17 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+)
+
 ROOT_URLCONF = 'example.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -133,7 +144,9 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'cms',
     'haystack',
+    'mptt',
     'south',
     'commando',
     'commando.django.core',
@@ -142,8 +155,9 @@ INSTALLED_APPS = (
     'commando.django.contrib.sessions',
     'commando.django.contrib.sitemaps',
     'commando.django.contrib.staticfiles',
-    'commando.contrib.south',
+    'commando.contrib.cms',
     'commando.contrib.haystack',
+    'commando.contrib.south',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

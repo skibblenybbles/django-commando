@@ -6,14 +6,16 @@ BaseSQLCustomCommand = management.get_command_class(
 
 if BaseSQLCustomCommand is not None:
     
+    base = BaseSQLCustomCommand()
+    
     class SQLCustomCommandOptions(management.CommandOptions):
         """
         SQLCustom command options.
         
         """
-        args = BaseSQLCustomCommand.args
-        help = BaseSQLCustomCommand.help
-        option_list = BaseSQLCustomCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[sqlcustom options]",

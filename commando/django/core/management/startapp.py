@@ -6,14 +6,16 @@ BaseStartAppCommand = management.get_command_class(
 
 if BaseStartAppCommand is not None:
     
+    base = BaseStartAppCommand()
+    
     class StartAppCommandOptions(management.CommandOptions):
         """
         StartApp command options.
         
         """
-        args = BaseStartAppCommand.args
-        help = BaseStartAppCommand.help
-        option_list = BaseStartAppCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[startapp options]",

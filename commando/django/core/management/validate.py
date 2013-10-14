@@ -6,14 +6,16 @@ BaseValidateCommand = management.get_command_class(
 
 if BaseValidateCommand is not None:
     
+    base = BaseValidateCommand()
+    
     class ValidateCommandOptions(management.CommandOptions):
         """
         Validate command options.
         
         """
-        args = BaseValidateCommand.args
-        help = BaseValidateCommand.help
-        option_list = BaseValidateCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[validate options]",

@@ -6,14 +6,16 @@ BaseBuildSolrSchemaCommand = management.get_command_class(
 
 if BaseBuildSolrSchemaCommand is not None:
     
+    base = BaseBuildSolrSchemaCommand()
+    
     class BuildSolrSchemaCommandOptions(management.CommandOptions):
         """
         BuildSolrSchema command options.
         
         """
-        args = BaseBuildSolrSchemaCommand.args
-        help = BaseBuildSolrSchemaCommand.help
-        option_list = BaseBuildSolrSchemaCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[build_solr_schema options]",

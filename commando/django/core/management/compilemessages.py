@@ -6,14 +6,16 @@ BaseCompileMessagesCommand = management.get_command_class(
 
 if BaseCompileMessagesCommand is not None:
     
+    base = BaseCompileMessagesCommand()
+    
     class CompileMessagesCommandOptions(management.CommandOptions):
         """
         Cleanup command options.
         
         """
-        args = BaseCompileMessagesCommand.args
-        help = BaseCompileMessagesCommand.help
-        option_list = BaseCompileMessagesCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[compilemesssages options]",

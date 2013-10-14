@@ -6,14 +6,16 @@ BaseSQLIndexesCommand = management.get_command_class(
 
 if BaseSQLIndexesCommand is not None:
     
+    base = BaseSQLIndexesCommand()
+    
     class SQLIndexesCommandOptions(management.CommandOptions):
         """
         SQLIndexes command options.
         
         """
-        args = BaseSQLIndexesCommand.args
-        help = BaseSQLIndexesCommand.help
-        option_list = BaseSQLIndexesCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[sqlindexes options]",

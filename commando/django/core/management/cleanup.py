@@ -6,14 +6,16 @@ BaseCleanupCommand = management.get_command_class(
 
 if BaseCleanupCommand is not None:
     
+    base = BaseCleanupCommand()
+    
     class CleanupCommandOptions(management.CommandOptions):
         """
         Cleanup command options.
         
         """
-        args = BaseCleanupCommand.args
-        help = BaseCleanupCommand.help
-        option_list = BaseCleanupCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[cleanup options]",

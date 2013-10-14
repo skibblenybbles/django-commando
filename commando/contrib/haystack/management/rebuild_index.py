@@ -6,14 +6,16 @@ BaseRebuildIndexCommand = management.get_command_class(
 
 if BaseRebuildIndexCommand is not None:
     
+    base = BaseRebuildIndexCommand()
+    
     class RebuildIndexCommandOptions(management.CommandOptions):
         """
         RebuildIndex command options.
         
         """
-        args = BaseRebuildIndexCommand.args
-        help = BaseRebuildIndexCommand.help
-        option_list = BaseRebuildIndexCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[rebuild_index options]",

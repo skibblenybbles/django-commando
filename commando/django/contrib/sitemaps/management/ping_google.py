@@ -6,14 +6,16 @@ BasePingGoogleCommand = management.get_command_class(
 
 if BasePingGoogleCommand is not None:
     
+    base = BasePingGoogleCommand()
+    
     class PingGoogleCommandOptions(management.CommandOptions):
         """
         PingGoogle command options.
         
         """
-        args = BasePingGoogleCommand.args
-        help = BasePingGoogleCommand.help
-        option_list = BasePingGoogleCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[ping_google options]",

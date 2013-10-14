@@ -6,14 +6,16 @@ BaseDiffSettingsCommand = management.get_command_class(
 
 if BaseDiffSettingsCommand is not None:
     
+    base = BaseDiffSettingsCommand()
+    
     class DiffSettingsCommandOptions(management.CommandOptions):
         """
         Diff settings command options.
         
         """
-        args = BaseDiffSettingsCommand.args
-        help = BaseDiffSettingsCommand.help
-        option_list = BaseDiffSettingsCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[diffsettings options]",

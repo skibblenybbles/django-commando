@@ -6,14 +6,16 @@ BaseDBShellCommand = management.get_command_class(
 
 if BaseDBShellCommand is not None:
     
+    base = BaseDBShellCommand()
+    
     class DBShellCommandOptions(management.CommandOptions):
         """
         Database shell command options.
         
         """
-        args = BaseDBShellCommand.args
-        help = BaseDBShellCommand.help
-        option_list = BaseDBShellCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[dbshell options]",

@@ -6,14 +6,16 @@ BaseInspectDBCommand = management.get_command_class(
 
 if BaseInspectDBCommand is not None:
     
+    base = BaseInspectDBCommand()
+    
     class InspectDBCommandOptions(management.CommandOptions):
         """
         InspectDB command options.
         
         """
-        args = BaseInspectDBCommand.args
-        help = BaseInspectDBCommand.help
-        option_list = BaseInspectDBCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[inspectdb options]",

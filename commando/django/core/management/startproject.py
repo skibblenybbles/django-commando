@@ -6,14 +6,16 @@ BaseStartProjectCommand = management.get_command_class(
 
 if BaseStartProjectCommand is not None:
     
+    base = BaseStartProjectCommand()
+    
     class StartProjectCommandOptions(management.CommandOptions):
         """
         StartProject command options.
         
         """
-        args = BaseStartProjectCommand.args
-        help = BaseStartProjectCommand.help
-        option_list = BaseStartProjectCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[startproject options]",

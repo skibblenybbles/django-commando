@@ -6,14 +6,16 @@ BaseClearSessionsCommand = management.get_command_class(
 
 if BaseClearSessionsCommand is not None:
     
+    base = BaseClearSessionsCommand()
+    
     class ClearSessionsCommandOptions(management.CommandOptions):
         """
         ClearSessions command options.
         
         """
-        args = BaseClearSessionsCommand.args
-        help = BaseClearSessionsCommand.help
-        option_list = BaseClearSessionsCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[clearsessions options]",

@@ -6,14 +6,16 @@ BaseMigrateCommand = management.get_command_class(
 
 if BaseMigrateCommand is not None:
     
+    base = BaseMigrateCommand()
+    
     class MigrateCommandOptions(management.CommandOptions):
         """
         Migrate command options.
         
         """
-        args = BaseMigrateCommand.args
-        help = BaseMigrateCommand.help
-        option_list = BaseMigrateCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[migrate options]",

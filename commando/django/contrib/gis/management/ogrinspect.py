@@ -6,14 +6,16 @@ BaseOGRInspectCommand = management.get_command_class(
 
 if BaseOGRInspectCommand is not None:
     
+    base = BaseOGRInspectCommand()
+    
     class OGRInspectCommandOptions(management.CommandOptions):
         """
         OGRInspect command options.
         
         """
-        args = BaseOGRInspectCommand.args
-        help = BaseOGRInspectCommand.help
-        option_list = BaseOGRInspectCommand.option_list[
+        args = base.args
+        help = base.help
+        option_list = base.option_list[
             len(management.BaseCommandOptions.option_list):]
         option_groups = (
             ("[ogrinspect options]",

@@ -247,7 +247,11 @@ class Command(CommandOptions, management.BaseCommand):
         Customize the parser to include option groups.
         
         """
-        parser = super(Command, self).create_parser(prog_name, subcommand)
+        parser = optparse.OptionParser(
+            prog=prog_name,
+            usage=self.usage(subcommand),
+            version=self.get_version(),
+            option_list=self.get_option_list())
         for name, description, option_list in self.get_option_groups():
             group = optparse.OptionGroup(parser, name, description);
             map(group.add_option, option_list)
