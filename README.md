@@ -2,7 +2,7 @@ django-commando
 ===============
 
 django-commando builds on Django's management command API to simplify writing,
-overriding and sequencing Django management commands in a declarative style.
+overriding and sequencing Django management commands using a declarative style.
 
 ### Motivation
 
@@ -133,7 +133,7 @@ Options:
 You can see that django-commando groups the options, showing you `migrate`'s
 specific options, separated from the standard options for every Django command.
 The `--version` and `-h, --help` options are added by the underlying
-`optparse` module, and the `-q, --quiet` options is displayed at the top for
+`optparse` module, and the `-q, --quiet` option is displayed at the top for
 user convenience.
 
 If we remove `"commando.contrib.south"` from `INSTALLED_APPS`, then `south`
@@ -190,10 +190,51 @@ overridden by `commando` groups the command's options for the `help` display
 and calls the underlying management command when run. If you don't care about
 the option grouping, simply don't add the `commando` apps to `INSTALLED_APPS`.
 
+If you include a `commando` app without the underlying app that it overrides,
+the `help` message will inform you. For example, if we restore
+`"commando.contrib.south"` and remove `"south"` in `INSTALLED_APPS`, we'll get
+this:
+
+```
+$ python manage.py help migrate
+Usage: manage.py migrate 
+
+Unimplemented command.
+
+Options:
+  -q, --quiet           Suppress all prompts and output.
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+
+  [standard options]:
+    Standard Django management command options.
+
+    -v VERBOSITY, --verbosity=VERBOSITY
+                        Verbosity level; 0=minimal output, 1=normal output,
+                        2=verbose output, 3=very verbose output
+    --settings=SETTINGS
+                        The Python path to a settings module, e.g.
+                        "myproject.settings.main". If this isn't provided, the
+                        DJANGO_SETTINGS_MODULE environment variable will be
+                        used.
+    --pythonpath=PYTHONPATH
+                        A directory to add to the Python path, e.g.
+                        "/home/djangoprojects/myproject".
+    --traceback         Print traceback on exception
+```
+
+If you run such a command, you'll get an error:
+
+```
+$ python manage.py migrate
+CommandError: This command is not implemented
+```
+
 django-commando provides base classes for writing, overriding and sequencing
 management commands. Read on to see how to use them.
 
 ### Writing Management Commands
+
 
 
 
