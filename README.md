@@ -136,7 +136,7 @@ class SearchCodeCommand(SearchCodeCommandOptions, management.StandardCommand):
         management.StandardCommand.option_groups
 ```
 
-Then, in `devutils.management.comands.grep` we'll write:
+Then, in `devutils.management.comands.searchcode` we'll write:
 
 ```python
 from ..searchcode import SearchCodeCommand as Command
@@ -158,7 +158,7 @@ $ python manage.py searchcode "S.*Command"
 You should see similar results for your project.
 
 Now, let's look closely at the management command implementation in
-`devutils.management.grep`. The definition is split up into two classes:
+`devutils.management.searchcode`. The definition is split up into two classes:
 `SearchCodeCommandOptions`, which inherits from
 `commando.management.CommandOptions` and `SearchCodeCommand`, which inherits
 from the `SearchCodeCommandOptions` that we defined and from
