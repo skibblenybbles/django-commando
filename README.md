@@ -16,7 +16,7 @@ following features:
 
 *   a declarative API for managing and processing command options and
     option groups
-*   a declarative API for specifying which action or actions to perform when
+*   a declarative API for specifying which action(s) to perform when
     the command is run
 *   a uniform and relatively simple way to override existing management
     commands without writing nasty hacks
@@ -28,7 +28,7 @@ following features:
     [Haystack](http://haystacksearch.org/) and
     [django CMS](https://www.django-cms.org/en/)
 
-### Installation and Usage
+### Installation
 
 django-commando is published on [PyPI](https://pypi.python.org/pypi), so you
 should install it with pip:
@@ -37,9 +37,161 @@ should install it with pip:
 pip install django-commando
 ```
 
-To use the provided Django or third-party management command overrides,
-add any of the `commando` apps to the <strong>end</strong> of your
-`INSTALLED_APPS` setting:
+### Writing Management Commands
+
+For writing mangement command with `commando`, you'll need to understand
+Python's [`optparse`](http://docs.python.org/2/library/optparse.html) module
+for creating and parsing command line options. It's assumed that you know
+how to use the `optparse.make_option()` function.
+
+To write a management command with `commando`, you'll need to create the
+proper package structure under one of your apps (the same as Django's
+management command requirements). To illustrate, let's create an app named
+`osutils` and write a command that runs the shell program `grep` to search
+our project's Python code for a particular pattern.
+
+* `<project-root>`
+    * manage.py
+    * `<project>`
+        * settings.py
+        * wsgi.py
+        * ...
+
+Of course `<project-root>` should be the root of your Django project,
+`<project>` should be the top-level package name of your Django project,
+and "..." represents the various apps that you've written for your project.
+
+We'll create our `osutils` app by running.
+
+```
+$ python manage.py startapp osutils
+```
+
+We'll add `"<project>.osutils"` to our `INSTALLED_APPS` setting,
+where `<project>` is the top-level package name for our project.
+
+Under the new "osutils" app directory, we should now see:
+
+* osutils
+    * models.py
+    * tests.py
+    * views.py
+
+We'll add `management` and `management.commands` packages under the "osutils"
+app directory, and we'll populate them with the modules that will implement
+the command:
+
+* osutils
+    * models.py
+    * tests.py
+    * views.py
+    * management
+        * \_\_init\_\_.py
+        * grep.py
+        * commands
+            * \_\_init\_\_.py
+            * grep.py
+
+We'll define our command in `osutils.management.grep` and simply import it as
+`Command` in `osutils.management.commands.grep`. Here's the definition of the
+command in `osutils.management.grep`:
+
+```python
+from django.core.management import CommandError
+
+from commando import management
+
+
+class GrepCommandOptions(management.CommandOptions):
+    args = "[pattern]"
+    help = "Search current directory for a regular expression pattern"
+    option_list = ()
+    option_groups = ()
+    actions = ("grep",)
+    
+    def validate_grep(self, *arguments, **options):
+        # Make sure this command was called with one argument.
+        if not len(arguments) == 1:
+            raise CommandError(
+                "You must provide a single regular expression pattern")
+        
+        # Make sure grep is available in the shell.
+        self.check_program("grep")
+    
+    def handle_grep(self, pattern, **options):
+        self.call_program("grep", "-nrI", "-P", pattern, ".")
+
+
+class GrepCommand(GrepCommandOptions, management.StandardCommand):
+    option_list = management.StandardCommand.option_list
+    option_groups = \
+        GrepCommandOptions.option_groups + \
+        management.StandardCommand.option_groups
+```
+
+Then, in `osutils.management.comands.grep` we'll write:
+
+```python
+from ..grep import GrepCommand as Command
+```
+
+Now, we should be able to run the command. From the `<project-root>` directory,
+run this:
+
+```
+$ python manage.py grep "G.*Command"
+./<project>/osutils/management/commands/grep.py:1:from ..grep import GrepCommand as Command
+./<project>/osutils/management/grep.py:6:class GrepCommandOptions(management.CommandOptions):
+./<project>/osutils/management/grep.py:26:class GrepCommand(GrepCommandOptions, management.StandardCommand):
+./<project>/osutils/management/grep.py:29:        GrepCommandOptions.option_groups + \
+```
+
+You should see similar results for your project.
+
+Now, let's look closely at the management command implementation in
+`osutils.management.grep`. The definition is split up into two classes:
+`GrepCommandOptions`, which inherits from `commando.management.CommandOptions`
+and `GrepCommand`, which inherits from the `GrepCommandOptions` that we defined
+and from `commando.management.StandardCommand`.
+
+`GrepCommandOptions` defines the options, options groups and actions that are
+specific to the `grep` management command. `GrepCommand` is the actual command
+that will be run by Django. It uses multiple inheritance to mix the
+functionality defined by `GruntCommandOptions` with the standard command
+functionality defined by `command.management.StandardCommand`.
+
+You don't have to write two classes to write a management command, but
+`commando`'s architecture encourages you to do so. By separating your command's
+unique options and functionality into its own class, it will be much easier to
+override your command or add it to a command sequence implemented by another
+management command.
+
+
+### Overriding Management Commands
+
+
+
+
+### Sequencing Management Commands
+
+
+
+
+### Utilities
+
+
+
+
+### Included Management Command Overrides
+
+django-commando provides management command overrides for Django,
+South, Haystack and django CMS. Each of these commands improves the
+`help` display but simply runs the underlying management command
+when run.
+
+To use the provided management command overrides, add any of the
+`commando` apps shown below to the <em>end</em> of your `INSTALLED_APPS`
+setting:
 
 ```python
 INSTALLED_APPS = (
@@ -64,8 +216,8 @@ INSTALLED_APPS = (
 
 It's important that these management commands appear at the end of
 `INSTALLED_APPS`. Django searches for management commands in the opposite
-order of its tools like template loaders and static files finders. It will
-search the `INSTALLED_APPS` setting in reverse until it finds the
+order of its other tools like template loaders and static files finders. It
+will search the `INSTALLED_APPS` setting in reverse until it finds the
 command. Here, `"commando.contrib.south"` appears below `"south"`, so 
 when we run a `south` command, `commando`'s version in
 `command.contrib.south` will be called.
@@ -185,10 +337,11 @@ Options:
   -h, --help            show this help message and exit
 ```
 
-For complex commands, you may find the option groups helpful. Each command
-overridden by `commando` groups the command's options for the `help` display
-and calls the underlying management command when run. If you don't care about
-the option grouping, simply don't add the `commando` apps to `INSTALLED_APPS`.
+For complex commands, you may find the option groups shown above helpful.
+Each command overridden by `commando` groups the command's options for the
+`help` display and calls the underlying management command when run. If you
+don't care for the option grouping, don't add the `commando` apps to
+`INSTALLED_APPS`.
 
 If you include a `commando` app without the underlying app that it overrides,
 the `help` message will inform you. For example, if we restore
@@ -223,31 +376,12 @@ Options:
     --traceback         Print traceback on exception
 ```
 
-If you run such a command, you'll get an error:
+If we run such a command, we'll get an error:
 
 ```
 $ python manage.py migrate
 CommandError: This command is not implemented
 ```
-
-django-commando provides base classes for writing, overriding and sequencing
-management commands. Read on to see how to use them.
-
-### Writing Management Commands
-
-
-
-
-### Overriding Management Commands
-
-
-### Sequencing Management Commands
-
-
-### Utilities
-
-
-### Included Management Command Overrides
 
 
 #### `commando.django.core`

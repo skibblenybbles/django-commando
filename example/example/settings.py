@@ -148,7 +148,9 @@ INSTALLED_APPS = (
     'haystack',
     'mptt',
     'south',
-    'commando',
+    
+    'example.osutils',
+    
     'commando.django.core',
     'commando.django.contrib.auth',
     'commando.django.contrib.gis',
