@@ -39,16 +39,24 @@ pip install django-commando
 
 ### Writing Management Commands
 
-For writing mangement command with `commando`, you'll need to understand
-Python's [`optparse`](http://docs.python.org/2/library/optparse.html) module
+To write mangement commands, you'll need some familiarity with Python's
+[`optparse`](http://docs.python.org/2/library/optparse.html) module
 for creating and parsing command line options. It's assumed that you know
 how to use the `optparse.make_option()` function.
 
-To write a management command with `commando`, you'll need to create the
-proper package structure under one of your apps (the same as Django's
-management command requirements). To illustrate, let's create an app named
-`osutils` and write a command that runs the shell program `grep` to search
-our project's Python code for a particular pattern.
+You'll also need to understand the
+[package structure for writing management commands](https://docs.djangoproject.com/en/1.5/howto/custom-management-commands/#module-django.core.management),
+as documented by Django.
+
+#### A simple development utility command: `searchcode`
+
+To illustrate `commando`'s features, we'll write a simple management command
+called `searchcode` that runs the shell program `grep` to search the current
+directory for Python files containing a particular regular expression.
+
+We'll start by creating a new app and setting up the proper package structure 
+for the management command. Before we start, our project should have a layout
+like this:
 
 * `<project-root>`
     * manage.py
@@ -57,44 +65,43 @@ our project's Python code for a particular pattern.
         * wsgi.py
         * ...
 
-Of course `<project-root>` should be the root of your Django project,
-`<project>` should be the top-level package name of your Django project,
-and "..." represents the various apps that you've written for your project.
+Here, `<project-root>` is the root directory for your Django project,
+`<project>` is the top-level package name for your project, and "..."
+represents the various apps that you've written for your project.
 
-We'll create our `osutils` app by running.
+Let's create a new `devutils` app by running:
 
 ```
-$ python manage.py startapp osutils
+$ python manage.py startapp devutils
 ```
 
-We'll add `"<project>.osutils"` to our `INSTALLED_APPS` setting,
-where `<project>` is the top-level package name for our project.
+We should also add `"<project>.devutils"` to our `INSTALLED_APPS` setting,
+where `<project>` is the top-level package name for the project.
 
-Under the new "osutils" app directory, we should now see:
+Under the new `devutils` app directory, we should now see:
 
-* osutils
+* devutils
     * models.py
     * tests.py
     * views.py
 
-We'll add `management` and `management.commands` packages under the "osutils"
-app directory, and we'll populate them with the modules that will implement
-the command:
+We'll add `management` and `management.commands` packages under `devutils`, 
+and we'll populate them with the modules that will implement the command:
 
-* osutils
+* devutils
     * models.py
     * tests.py
     * views.py
     * management
         * \_\_init\_\_.py
-        * grep.py
+        * searchcode.py
         * commands
             * \_\_init\_\_.py
-            * grep.py
+            * seachcode.py
 
-We'll define our command in `osutils.management.grep` and simply import it as
-`Command` in `osutils.management.commands.grep`. Here's the definition of the
-command in `osutils.management.grep`:
+We'll define our command in `devutils.management.searchcode` and simply import it as
+`Command` in `devutils.management.commands.searchcode`. Here's the definition of the
+command in `devutils.management.searchcode`:
 
 ```python
 from django.core.management import CommandError
@@ -102,69 +109,106 @@ from django.core.management import CommandError
 from commando import management
 
 
-class GrepCommandOptions(management.CommandOptions):
-    args = "[pattern]"
-    help = "Search current directory for a regular expression pattern"
+class SearchCodeCommandOptions(management.CommandOptions):
+    args = "[regular expression]"
+    help = "Recursively search files under the current directory for a regular expression"
     option_list = ()
     option_groups = ()
-    actions = ("grep",)
+    actions = ("searchcode",)
     
-    def validate_grep(self, *arguments, **options):
+    def validate_searchcode(self, *arguments, **options):
         # Make sure this command was called with one argument.
         if not len(arguments) == 1:
             raise CommandError(
-                "You must provide a single regular expression pattern")
+                "You must provide a regular expression")
         
         # Make sure grep is available in the shell.
         self.check_program("grep")
     
-    def handle_grep(self, pattern, **options):
-        self.call_program("grep", "-nrI", "-P", pattern, ".")
+    def handle_searchcode(self, pattern, **options):
+        self.call_program("grep", "-nrI", "--include=*.py", "-P", pattern, ".")
 
 
-class GrepCommand(GrepCommandOptions, management.StandardCommand):
+class SearchCodeCommand(SearchCodeCommandOptions, management.StandardCommand):
     option_list = management.StandardCommand.option_list
     option_groups = \
-        GrepCommandOptions.option_groups + \
+        SearchCodeCommandOptions.option_groups + \
         management.StandardCommand.option_groups
 ```
 
-Then, in `osutils.management.comands.grep` we'll write:
+Then, in `devutils.management.comands.grep` we'll write:
 
 ```python
-from ..grep import GrepCommand as Command
+from ..searchcode import SearchCodeCommand as Command
 ```
 
 Now, we should be able to run the command. From the `<project-root>` directory,
 run this:
 
 ```
-$ python manage.py grep "G.*Command"
-./<project>/osutils/management/commands/grep.py:1:from ..grep import GrepCommand as Command
-./<project>/osutils/management/grep.py:6:class GrepCommandOptions(management.CommandOptions):
-./<project>/osutils/management/grep.py:26:class GrepCommand(GrepCommandOptions, management.StandardCommand):
-./<project>/osutils/management/grep.py:29:        GrepCommandOptions.option_groups + \
+$ python manage.py searchcode "S.*Command"
+./example/devutils/management/commands/searchcode.py:1:from ..searchcode import SearchCodeCommand as Command
+./example/devutils/management/searchcode.py:6:class SearchCodeCommandOptions(management.CommandOptions):
+./example/devutils/management/searchcode.py:26:class SearchCodeCommand(SearchCodeCommandOptions, management.StandardCommand):
+./example/devutils/management/searchcode.py:27:    option_list = management.StandardCommand.option_list
+./example/devutils/management/searchcode.py:29:        SearchCodeCommandOptions.option_groups + \
+./example/devutils/management/searchcode.py:30:        management.StandardCommand.option_groups
 ```
 
 You should see similar results for your project.
 
 Now, let's look closely at the management command implementation in
-`osutils.management.grep`. The definition is split up into two classes:
-`GrepCommandOptions`, which inherits from `commando.management.CommandOptions`
-and `GrepCommand`, which inherits from the `GrepCommandOptions` that we defined
-and from `commando.management.StandardCommand`.
+`devutils.management.grep`. The definition is split up into two classes:
+`SearchCodeCommandOptions`, which inherits from
+`commando.management.CommandOptions` and `SearchCodeCommand`, which inherits
+from the `SearchCodeCommandOptions` that we defined and from
+`commando.management.StandardCommand`.
 
-`GrepCommandOptions` defines the options, options groups and actions that are
-specific to the `grep` management command. `GrepCommand` is the actual command
-that will be run by Django. It uses multiple inheritance to mix the
-functionality defined by `GruntCommandOptions` with the standard command
-functionality defined by `command.management.StandardCommand`.
+`SearchCodeCommandOptions` defines the options, options groups and actions that
+are unique For the `searchcode` management command. `SearchCodeCommand` is the
+actual command that will be run by Django. It uses multiple inheritance to mix
+the functionality defined by `GruntCommandOptions` with the standard command
+functionality defined by `commando.management.StandardCommand`.
 
-You don't have to write two classes to write a management command, but
+You don't have to write two classes to create a management command, but
 `commando`'s architecture encourages you to do so. By separating your command's
-unique options and functionality into its own class, it will be much easier to
+unique options and functionality into its own class, it will be easier to
 override your command or add it to a command sequence implemented by another
 management command.
+
+The `SearchCodeCommandOptions` class defines several attributes and two
+methods. The `args` and `help` attributes are used to populate the the message
+that's displayed when `manage.py help searchcode` is run. The `option_list`
+and `option_groups` attributes define the options that the command accepts.
+We'll add some options shortly to improve our command and demonstrate this
+feature.
+
+When the command is invoked, its `handle()` method iterates over the names
+in the `actions` attribute. It attempts to call a `validate_<action>()` method
+for each action name. Then, it attempts to call a `handle_<action>()` method
+for each action name. Since we've specified `("searchcode",)` for our `actions`
+attribute, our `validate_searchcode()` and `handle_searchcode()` methods will
+be run. Each will be called with a variable length list of arguments from the
+command line and a dictionary of options, parsed by `optparse`.
+
+Our `validate_searchcode()` method checks that exactly one argument has been
+passed and raises `CommandError` otherwise. It also calls the helper method
+`check_program` to verify that the `grep` command is available in the shell.
+
+Since `validate_searchcode()` checked the number of arguments, the
+`handle_searchcode()` method can safely accept a single argument of `pattern`,
+instead of the more general `*arguments`, without risking a runtime
+`TypeError`. The `handle_searchcode()` method invokes `grep` with the passed
+pattern using the helper method `call_program()`. The `grep` call includes
+the flags:
+
+* `-n`: show line numbers
+* `-r`: search files recursively
+* `-I`: skip binary files
+* `--include=*.py`: search only Python files
+* `-P`: use Perl syntax for the regular expression
+
+
 
 
 ### Overriding Management Commands
@@ -186,7 +230,7 @@ management command.
 
 django-commando provides management command overrides for Django,
 South, Haystack and django CMS. Each of these commands improves the
-`help` display but simply runs the underlying management command
+`help` display and simply executes the underlying management command
 when run.
 
 To use the provided management command overrides, add any of the

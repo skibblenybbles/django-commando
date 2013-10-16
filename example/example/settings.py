@@ -149,7 +149,7 @@ INSTALLED_APPS = (
     'mptt',
     'south',
     
-    'example.osutils',
+    'example.devutils',
     
     'commando.django.core',
     'commando.django.contrib.auth',
