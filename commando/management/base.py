@@ -4,6 +4,8 @@ import subprocess
 
 from django.core import management
 from django.utils.importlib import import_module
+import collections
+from functools import reduce
 
 
 def get_option_default(option):
@@ -29,7 +31,7 @@ def get_option_defaults(command):
 
 
 def issubpackage(package, parents):
-    if isinstance(parents, basestring):
+    if isinstance(parents, str):
         parents = (parents,)
     return len(parents) > 0 and reduce(
         bool.__or__,
@@ -53,7 +55,7 @@ def get_command_class_from_apps(name, apps, exclude_packages=None, exclude_comma
     """
     if exclude_packages is None:
         exclude_packages = []
-    for app in reversed(filter(lambda app: not issubpackage(app, exclude_packages), apps)):
+    for app in reversed([app for app in apps if not issubpackage(app, exclude_packages)]):
         try:
             command_class = import_module(
                 "{app:s}.management.commands.{name:s}".format(
@@ -125,7 +127,7 @@ def check_program(name):
     with open(os.devnull, "w") as null:
         try:
             subprocess.check_call(("which", name), stdout=null, stderr=null)
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             return False
     return True
 
@@ -254,7 +256,7 @@ class Command(CommandOptions, management.BaseCommand):
             option_list=self.get_option_list())
         for name, description, option_list in self.get_option_groups():
             group = optparse.OptionGroup(parser, name, description);
-            map(group.add_option, option_list)
+            list(map(group.add_option, option_list))
             parser.add_option_group(group)
         return parser
     
@@ -275,7 +277,7 @@ class Command(CommandOptions, management.BaseCommand):
         for name in self.get_option_names():
             parse = getattr(self, "parse_option_{name:s}".format(
                 name=name), None)
-            if parse is not None and callable(parse):
+            if parse is not None and isinstance(parse, collections.Callable):
                 options[name] = parse()
         return options
     
@@ -294,12 +296,12 @@ class Command(CommandOptions, management.BaseCommand):
         for name in self.get_actions():
             validate = getattr(self, "validate_{name:s}".format(
                 name=name), None)
-            if validate is not None and callable(validate):
+            if validate is not None and isinstance(validate, collections.Callable):
                 validate(*arguments, **options)
         for name in self.get_actions():
             handle = getattr(self, "handle_{name:s}".format(
                 name=name), None)
-            if handle is not None and callable(handle):
+            if handle is not None and isinstance(handle, collections.Callable):
                 handle(*self.arguments, **self.options)
 
 
@@ -391,7 +393,7 @@ class BaseCommandOptions(CommandOptions):
                 subprocess.check_call((name,) + tuple(arguments), 
                     stdout=null if verbosity == 0 else self.stdout,
                     stderr=null if verbosity == 0 else self.stderr)
-            except subprocess.CalledProcessError, error:
+            except subprocess.CalledProcessError as error:
                 raise management.CommandError(
                     "{name:s} failed with exit code {code:d}".format(
                         name=name, code=error.returncode))
