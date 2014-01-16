@@ -56,7 +56,8 @@ def get_command_class_from_apps(name, apps, exclude_packages=None, exclude_comma
     """
     if exclude_packages is None:
         exclude_packages = []
-    for app in reversed(app for app in apps if not issubpackage(app, exclude_packages)):
+    for app in reversed(
+        [app for app in apps if not issubpackage(app, exclude_packages)]):
         try:
             command_class = import_module(
                 "{app:s}.management.commands.{name:s}".format(
